@@ -11,22 +11,79 @@
       align-items: center;
       height: 100vh;
       margin: 0;
+      font-family: Arial, sans-serif;
     }
-    button {
+    .main-button {
       font-size: 2rem;
       padding: 1rem 2rem;
+      background-color: #ca2bba;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+    }
+    .main-button:hover {
+      background-color: #cb1190;
+    }
+    .number-control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .control-button {
+      font-size: 1.5rem;
+      width: 40px;
+      height: 40px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .control-button:hover {
+      background-color: #e0e0e0;
+    }
+    .number-display {
+      font-size: 1.5rem;
+      margin: 0 1rem;
+      width: 2rem;
+      text-align: center;
+    }
+    .label {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #555;
     }
     #result {
       font-size: 2rem;
       margin-top: 1rem;
+      text-align: center;
+      min-height: 150px;
+    }
+    .name-item {
+      margin: 0.5rem 0;
     }
   </style>
 </head>
 <body>
-  <button onclick="document.getElementById('result').innerText = students[Math.floor(Math.random() * students.length)]">
-    点名
-  </button>
-  <p id="result"></p>
+  <button class="main-button" onclick="pick_random()">点名</button>
+  
+  <div class="number-control-container">
+    <div class="label">选择人数:</div>
+    <div class="number-control">
+      <div class="control-button" onclick="dec_cnt()">-</div>
+      <div id="nameCount" class="number-display">1</div>
+      <div class="control-button" onclick="inc_cnt()">+</div>
+    </div>
+  </div>
+  
+  <div id="result"></div>
+  
   <script>
     const students = ["谢慧豪",
 "肖金洋",
@@ -154,6 +211,51 @@
 "卢晓玲",
 "吕振宁",
 "郭靖宇"];
+    
+    let current = 1;
+    
+    function inc_cnt() {
+      if (current < 5) {
+        current++;
+        upd_cnt();
+      }
+    }
+    
+    function dec_cnt() {
+      if (current > 1) {
+        current--;
+        upd_cnt();
+      }
+    }
+    
+    function upd_cnt() {
+      document.getElementById('nameCount').textContent = current;
+    }
+    
+    function pick_random() {
+      const name = current;
+      const results = document.getElementById('result');
+      results.innerHTML = '';
+      
+      // Create a copy of the students array to avoid modifying the original
+      const available = [...students];
+      const selected = [];
+      
+      // Select name(s) and avoid duplicates
+      for (let i = 0; i < name && available.length > 0; i++) {
+        const ridx = Math.floor(Math.random() * available.length);
+        selected.push(available[ridx]);
+        available.splice(ridx, 1);
+      }
+      
+      // Display the selected names
+      selected.forEach((name, index) => {
+        const element = document.createElement('div');
+        element.className = 'name-item';
+        element.textContent = `${index + 1}. ${name}`;
+        results.appendChild(element);
+      });
+    }
   </script>
 </body>
 </html>
